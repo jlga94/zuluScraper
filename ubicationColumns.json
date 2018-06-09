@@ -1,0 +1,57 @@
+{
+	"Columns":[
+		"TraderName",
+		"Pips",
+		"Operaciones",
+		"Roi",
+		"MediaPips",
+		"GananciaPorc",
+		"MaxDDPips",
+		"Semanas",
+		"Usuarios",
+		"CantidadSeguida",
+		"BeneficioSegCuentaReal",
+		"Url",
+		"Excel"
+	],
+	"Ubications":{
+		"TraderName":{
+			"XPATH":".//zl-username/a",
+			"Attribute":"Title"
+		},
+		"Url":{
+			"XPATH":".//zl-username/a",
+			"Attribute":"href"
+		},
+		"Pips":{
+			"XPATH":".//tr/td/div[contains(@title,'pips ganados por el proveedor')]"
+		},
+		"Operaciones":{
+			"XPATH":".//tr/td/div[contains(@title,'total de operaciones cerradas')]"
+		},
+		"Roi":{
+			"XPATH":".//tr/td/div[contains(@title,'dinero ganado o perdido')]"
+		},
+		"MediaPips":{
+			"XPATH":".//tr/td/div[contains(@title,'promedio de pips ganados o perdidos por')]"
+		},
+		"GananciaPorc":{
+			"XPATH":".//tr/td/div[contains(@title,'El porcentaje de operaciones ganadoras')]"
+		},
+		"MaxDDPips":{
+			"XPATH":".//tr/td/div[contains(@title,'La diferencia en pips entre el punto')]"
+		},
+		"Semanas":{
+			"XPATH":".//tr/td/div[contains(@title,'de semanas que el proveedor')]"
+		},
+		"Usuarios":{
+			"XPATH":".//tr/td/div[contains(@title,'de usuarios reales y demo que')]"
+		},
+		"CantidadSeguida":{
+			"XPATH":".//tr/td/div[contains(@title,'saldo total de cuentas REALES siguiendo')]"
+		},
+		"BeneficioSegCuentaReal":{
+			"XPATH":".//tr/td/div[contains(@title,'Este es el beneficio neto obtenido en las cuentas Reales')]"
+		}
+	}
+}
