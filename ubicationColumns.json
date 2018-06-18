@@ -1,6 +1,7 @@
 {
 	"Columns":[
 		"TraderName",
+		"Order",
 		"Pips",
 		"Operaciones",
 		"Roi",
@@ -11,10 +12,25 @@
 		"Usuarios",
 		"CantidadSeguida",
 		"BeneficioSegCuentaReal",
+		"BadgeDollarGreen",
+		"BadgeDollarBlue",
+		"BadgeFullyVerified",
+		"BadgePartiallyVerified",
+		"BadgeZuluscript",
+		"BadgeApi",
+		"BadgeFifo",
+		"BadgeStar",
+		"BadgeScale",
+		"BadgeVeteran",
+		"BadgeCalendar",
+		"BadgeEA",
+		"ActividadRiesgosa",
+		"DeslizamientoSeguidoresAlto",
+		"InactividadDetectada",
 		"Url",
 		"Excel"
 	],
-	"Ubications":{
+	"UbicationsGrid":{
 		"TraderName":{
 			"XPATH":".//zl-username/a",
 			"Attribute":"Title"
@@ -52,6 +68,62 @@
 		},
 		"BeneficioSegCuentaReal":{
 			"XPATH":".//tr/td/div[contains(@title,'Este es el beneficio neto obtenido en las cuentas Reales')]"
+		}
+	},
+	"UbicationsBadges":{
+		"BadgeDollarGreen":{
+			"ICON":"icon-badge-dollar-green"
+		},
+		"BadgeDollarBlue":{
+			"ICON":"icon-badge-dollar-blue"
+		},
+		"BadgeFullyVerified":{
+			"ICON":"icon-badge-fully-verified"
+		},
+		"BadgePartiallyVerified":{
+			"ICON":"icon-badge-partially-verified"
+		},
+		"BadgeZuluscript":{
+			"ICON":"icon-badge-zuluscript"
+		},
+		"BadgeApi":{
+			"ICON":"icon-badge-api"
+		},
+		"BadgeFifo":{
+			"ICON":"icon-badge-fifo"
+		},
+		"BadgeStar":{
+			"ICON":"icon-badge-star"
+		},
+		"BadgeScale":{
+			"ICON":"icon-badge-scale"
+		},
+		"BadgeVeteran":{
+			"ICON":"icon-veteran"
+		},
+		"BadgeCalendar":{
+			"ICON":"icon-badge-calendar"
+		},
+		"BadgeEA":{
+			"ICON":"icon-badge-ea"
+		}
+	},
+	"UbicationsInside":{
+		"Order":{
+			"XPATH":"//zl-trader-rank/div/span/strong",
+			"Boolean":0
+		},
+		"ActividadRiesgosa":{
+			"XPATH":"//zl-trader-warning/div[contains(@title,'Este Trader ha demostrado que el comportamiento de riesgo')]",
+			"Boolean":1
+		},
+		"DeslizamientoSeguidoresAlto":{
+			"XPATH":"//zl-trader-warning/div[contains(@title,'Slippage alto detectado')]",
+			"Boolean":1
+		},
+		"InactividadDetectada":{
+			"XPATH":"//zl-trader-warning/div[contains(@title,'Trader Inactivo detectado')]",
+			"Boolean":1
 		}
 	}
 }

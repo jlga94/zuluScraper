@@ -18,8 +18,8 @@ import csv, string, sys, json
 from time import sleep
 import datetime
 import pandas as pd
-import os, sys
-import shutil,glob
+import os, sys, time, datetime
+import shutil, glob
 
 class LoginException(Exception):
 	def __init__(self):
@@ -50,10 +50,22 @@ def getDataPerTrader(rowElement,ubications):
 			data[ubication] = element.get_attribute(ubications[ubication]["Attribute"])
 		else:
 			element = element.find_element_by_xpath('..')
-			data[ubication] = element.text.split('\n')[1]
+			data[ubication] = element.text.split('\n')[1].strip()
 
 	print(data)
 	return data
+
+
+def getDataInsidePagePerTrader(data,driver,ubications):
+	for ubication in ubications.keys():
+		if ubications[ubication]["Boolean"]:
+			data[ubication] = len(driver.find_elements_by_xpath(ubications[ubication]["XPATH"])) > 0
+		else:
+			data[ubication] = driver.find_element_by_xpath(ubications[ubication]["XPATH"]).text.strip()
+
+	print(data)
+	return data
+
 
 def writeHeaderFile(outputFile,columns):
 	dfTraders = pd.DataFrame(columns=columns)
@@ -79,6 +91,9 @@ def main(user,password):
 
 	writeHeaderFile(outputFile,columnsJson["Columns"])
 
+	options = Options()
+	options.add_argument("--headless")
+
 	profile = webdriver.FirefoxProfile()
 	profile.set_preference("dom.disable_beforeunload", True)
 
@@ -101,7 +116,8 @@ def main(user,password):
 
 	binary = FirefoxBinary(firefoxDirectory)
 
-	driver = webdriver.Firefox(firefox_profile = profile,firefox_binary=binary)
+	driver = webdriver.Firefox(firefox_options=options,firefox_profile = profile,firefox_binary=binary)
+	#driver = webdriver.Firefox(firefox_profile = profile,firefox_binary=binary)
 	#driver = webdriver.Firefox(firefox_profile = profile)
 
 	driver.get(urlLogin)
@@ -150,13 +166,14 @@ def main(user,password):
 	rowsElements = driver.find_elements_by_xpath("//zl-performance-forex-list/div/table/tbody")
 	print(len(rowsElements))
 
-	badgesElements = driver.find_elements_by_xpath("//zl-trader-badge")
-	print(len(badgesElements))
+	#badgesElements = driver.find_elements_by_xpath("//zl-trader-badge")
+	#print(len(badgesElements))
 
 	for iRowElement in range(len(rowsElements)):
 		print(iRowElement)
-		rowData = getDataPerTrader(rowsElements[iRowElement],columnsJson["Ubications"])
+		rowData = getDataPerTrader(rowsElements[iRowElement],columnsJson["UbicationsGrid"])
 
+		'''
 		numElements = len(badgesElements[iRowElement].find_elements_by_xpath(".//ngl-icon[@ng-reflect-set-icon='icon-badge-partially-verified' or @ng-reflect-set-icon='icon-badge-fully-verified']"))
 		print(numElements)
 
@@ -179,6 +196,13 @@ def main(user,password):
 			hover = ActionChains(driver).move_to_element(badgesElements[iRowElement])
 			hover.perform()
 			sleep(1)
+		'''
+
+		badgesElementsHTML = rowsElements[iRowElement].find_element_by_xpath(".//zl-trader-badge").get_attribute('innerHTML')
+
+		for badge,item in columnsJson["UbicationsBadges"].items():
+			rowData[badge] = item["ICON"] in badgesElementsHTML
+
 
 		#open tab
 		driver.find_element_by_tag_name('body').send_keys(Keys.CONTROL + 't')
@@ -197,22 +221,26 @@ def main(user,password):
 			driver.quit()
 			raise Exception()
 
+		rowData = getDataInsidePagePerTrader(rowData, driver, columnsJson["UbicationsInside"])
+
 		graphicTimeElement = driver.find_element_by_xpath("//zl-timeframes/ngl-picklist/div/button")
 		graphicTimeElement.click()
 
 		graphicTotalTimeElements = driver.find_elements_by_xpath("//zl-timeframes/ngl-picklist/div/div/ul/li")
 		graphicTotalTimeElements[len(graphicTotalTimeElements) - 1].click()
 
+		excelFilename = "No hay archivo Excel disponible"
 
-		exportExcelElement = driver.find_element_by_xpath("//zl-trading-history-excel-export/span/button")
-		exportExcelElement.click()
+		if len(driver.find_elements_by_xpath("//zl-trading-history-excel-export/span/button")) > 0:
+			exportExcelElement = driver.find_element_by_xpath("//zl-trading-history-excel-export/span/button")
+			exportExcelElement.click()
 
-		exportExcel2007Elements = driver.find_elements_by_xpath("//zl-trading-history-excel-export/span/div/ul/li")
-		exportExcel2007Elements[0].click()
+			exportExcel2007Elements = driver.find_elements_by_xpath("//zl-trading-history-excel-export/span/div/ul/li")
+			exportExcel2007Elements[0].click()
 
-		sleep(3)
+			sleep(3)
 
-		excelFilename = getLastFilename(os.getcwd() + '\\' + today)
+			excelFilename = getLastFilename(os.getcwd() + '\\' + today)
 
 		rowData["Excel"] = excelFilename
 
@@ -237,7 +265,11 @@ if __name__ == "__main__":
 		password = sys.argv[2]
 		print("User: "+ user)
 		print("Password: "+ password)
+		t0 = time.time()
 		main(user,password)
+		tf = time.time()
+		total_time = int(tf - t0)
+		print("Tiempo Ejecución Total: " + str(datetime.timedelta(seconds=total_time)))
 	except LoginException:
 		print("Usuario o Password Incorrectos")
 	#except:
