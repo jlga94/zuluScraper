@@ -158,14 +158,14 @@ def main(user,password):
 
 	for i in range(59):
 		print("Page: " + str(i))
-		if len(driver.find_elements_by_xpath("//zl-load-more/button")) > 0:
-			try:
-				element = WebDriverWait(driver, delayLogin).until(EC.presence_of_element_located((By.XPATH,'//zl-load-more/button')))
-			except TimeoutException:
-				print("Se excedió el tiempo de espera")
-				driver.quit()
-				raise LoginException()
+		try:
+			element = WebDriverWait(driver, delayLogin).until(EC.presence_of_element_located((By.XPATH,'//zl-load-more/button')))
+		except TimeoutException:
+			print("Se excedió el tiempo de espera")
+			driver.quit()
+			raise LoginException()
 
+		if len(driver.find_elements_by_xpath("//zl-load-more/button")) > 0:
 			downloadMoreElement = driver.find_element_by_xpath("//zl-load-more/button")
 			downloadMoreElement.click()
 		else:
