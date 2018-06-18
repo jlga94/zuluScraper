@@ -156,9 +156,13 @@ def main(user,password):
 	moreDetailElement[0].click()
 
 
-	for i in range(1):
-		downloadMoreElement = driver.find_element_by_xpath("//zl-load-more/button")
-		downloadMoreElement.click()
+	for i in range(59):
+		print("Page: " + str(i))
+		if len(driver.find_elements_by_xpath("//zl-load-more/button")) > 0:
+			downloadMoreElement = driver.find_element_by_xpath("//zl-load-more/button")
+			downloadMoreElement.click()
+		else:
+			break
 
 		sleep(4.5)
 
