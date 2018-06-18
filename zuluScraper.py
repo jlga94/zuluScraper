@@ -131,8 +131,8 @@ def main(user,password):
 
 	driver.find_element_by_id("main_btnLogin").click()
 
-	delayLogin = 10 #seconds
-	delay = 25 #seconds
+	delayLogin = 30 #seconds
+	delay = 90 #seconds
 
 	try:
 		element = WebDriverWait(driver, delayLogin).until(EC.presence_of_element_located((By.ID,'user-top-container')))
@@ -159,12 +159,19 @@ def main(user,password):
 	for i in range(59):
 		print("Page: " + str(i))
 		if len(driver.find_elements_by_xpath("//zl-load-more/button")) > 0:
+			try:
+				element = WebDriverWait(driver, delayLogin).until(EC.presence_of_element_located((By.XPATH,'//zl-load-more/button')))
+			except TimeoutException:
+				print("Se excedió el tiempo de espera")
+				driver.quit()
+				raise LoginException()
+
 			downloadMoreElement = driver.find_element_by_xpath("//zl-load-more/button")
 			downloadMoreElement.click()
 		else:
 			break
 
-		sleep(4.5)
+		#sleep(4.5)
 
 
 	rowsElements = driver.find_elements_by_xpath("//zl-performance-forex-list/div/table/tbody")
