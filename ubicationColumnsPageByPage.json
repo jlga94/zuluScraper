@@ -1,0 +1,180 @@
+{
+	"Columns":[
+		"TraderName",
+		"Order",
+		"Pips",
+		"CantidadSeguida",
+		"BeneficioTotal",
+		"PosicAbiertas",
+		"Semanas",
+		"RoiAnualizado",
+		"MaximumDrawdownGeneral",
+		"MejorOperacion",
+		"PeorOperacion",
+		"Usuarios",
+		"TieneUsuariosCuentaReal",
+		"Vistos",
+		"UltimaActualizacion",
+		"BadgeDollarGreen",
+		"BadgeDollarBlue",
+		"BadgeFullyVerified",
+		"BadgePartiallyVerified",
+		"BadgeZuluscript",
+		"BadgeApi",
+		"BadgeFifo",
+		"BadgeStar",
+		"BadgeScale",
+		"BadgeVeteran",
+		"BadgeCalendar",
+		"BadgeEA",
+		"ActividadRiesgosa",
+		"DeslizamientoSeguidoresAlto",
+		"InactividadDetectada",
+		"Time",
+		"Ganancias",
+		"Operaciones",
+		"MaxOperacionesAbiertas",
+		"MediaPips",
+		"OperacionesExitosas",
+		"EquidadMinimaNecesaria",
+		"MaximumDrawdown",
+		"TiempoPromTrading",
+		"Url",
+		"Excel"
+	],
+	"UbicationsGeneral":{
+		"TraderName":{
+			"XPATH":"//zl-trader-profile/div/div",
+			"Attribute":"Title",
+			"Boolean":0
+		},
+		"Order":{
+			"XPATH":"//zl-trader-rank/div/span/strong",
+			"Boolean":0
+		},
+		"CantidadSeguida":{
+			"XPATH":".//zl-trader-overall-stats/div/div/div/div[contains(text(),'CANTIDAD SEGUIDA')]",
+			"Boolean":0
+		},
+		"BeneficioTotal":{
+			"XPATH":".//zl-trader-overall-stats/div/div/div/div[contains(text(),'BENEFICIO TOTAL')]",
+			"Boolean":0
+		},
+		"PosicAbiertas":{
+			"XPATH":".//zl-trader-overall-stats/div/div/div/div[contains(text(),'POSIC. ABIERTAS')]",
+			"Boolean":0
+		},
+		"Semanas":{
+			"XPATH":".//zl-trader-overall-stats/div/div/div/div[contains(text(),'SEMANAS')]",
+			"Boolean":0
+		},
+		"RoiAnualizado":{
+			"XPATH":".//zl-trader-overall-stats/div/div/div/div[contains(text(),'ROI')]",
+			"Boolean":0
+		},
+		"MaximumDrawdownGeneral":{
+			"XPATH":".//zl-trader-overall-stats/div/div/div/div[contains(text(),'MAXIMUM DRAWDOWN')]",
+			"Boolean":0
+		},
+		"MejorOperacion":{
+			"XPATH":".//zl-trader-overall-stats/div/div/div/div[contains(text(),'OPERACION MEJOR')]",
+			"Boolean":0
+		},
+		"PeorOperacion":{
+			"XPATH":".//zl-trader-overall-stats/div/div/div/div[contains(text(),'PEOR OPERACION')]",
+			"Boolean":0
+		},
+		"Usuarios":{
+			"XPATH":".//zl-trader-overall-stats/div/div/div/div[contains(text(),'USUARIOS')]",
+			"Boolean":0
+		},
+		"TieneUsuariosCuentaReal":{
+			"XPATH":".//zl-trader-overall-stats/div/div/div/div[contains(text(),'TIENE USUARIOS DE CUENTA REAL')]",
+			"Boolean":0
+		},
+		"Vistos":{
+			"XPATH":".//zl-trader-overall-stats/div/div/div/div[contains(text(),'VISTOS')]",
+			"Boolean":0
+		},
+		"UltimaActualizacion":{
+			"XPATH":".//zl-trader-overall-stats/div/div/div/div[contains(text(),'ULTIMA ACTUALIZACION')]",
+			"Boolean":0
+		},
+		"ActividadRiesgosa":{
+			"XPATH":"//zl-trader-warning/div[contains(@title,'Este Trader ha demostrado que el comportamiento de riesgo')]",
+			"Boolean":1
+		},
+		"DeslizamientoSeguidoresAlto":{
+			"XPATH":"//zl-trader-warning/div[contains(@title,'Slippage alto detectado')]",
+			"Boolean":1
+		},
+		"InactividadDetectada":{
+			"XPATH":"//zl-trader-warning/div[contains(@title,'Trader Inactivo detectado')]",
+			"Boolean":1
+		}
+	},
+	"UbicationsBadges":{
+		"BadgeDollarGreen":{
+			"ICON":"icon-badge-dollar-green"
+		},
+		"BadgeDollarBlue":{
+			"ICON":"icon-badge-dollar-blue"
+		},
+		"BadgeFullyVerified":{
+			"ICON":"icon-badge-fully-verified"
+		},
+		"BadgePartiallyVerified":{
+			"ICON":"icon-badge-partially-verified"
+		},
+		"BadgeZuluscript":{
+			"ICON":"icon-badge-zuluscript"
+		},
+		"BadgeApi":{
+			"ICON":"icon-badge-api"
+		},
+		"BadgeFifo":{
+			"ICON":"icon-badge-fifo"
+		},
+		"BadgeStar":{
+			"ICON":"icon-badge-star"
+		},
+		"BadgeScale":{
+			"ICON":"icon-badge-scale"
+		},
+		"BadgeVeteran":{
+			"ICON":"icon-veteran"
+		},
+		"BadgeCalendar":{
+			"ICON":"icon-badge-calendar"
+		},
+		"BadgeEA":{
+			"ICON":"icon-badge-ea"
+		}
+	},
+	"UbicationsPerTime":{
+		"Ganancias":{
+			"XPATH":".//zl-trader-trading-timeframe-stats/div/div/div/div/div/div[contains(@title,'pips ganados por el proveedor')]"
+		},
+		"Operaciones":{
+			"XPATH":".//zl-trader-trading-timeframe-stats/div/div/div/div/div/div[contains(@title,'total de operaciones cerradas')]"
+		},
+		"MaxOperacionesAbiertas":{
+			"XPATH":".//zl-trader-trading-timeframe-stats/div/div/div/div/div/div[contains(@title,'operaciones que el Trader ha abierto')]"
+		},
+		"MediaPips":{
+			"XPATH":".//zl-trader-trading-timeframe-stats/div/div/div/div/div/div[contains(@title,'promedio de pips ganados o perdidos')]"
+		},
+		"OperacionesExitosas":{
+			"XPATH":".//zl-trader-trading-timeframe-stats/div/div/div/div/div/div[contains(@title,'porcentaje de operaciones ganadoras')]"
+		},
+		"EquidadMinimaNecesaria":{
+			"XPATH":".//zl-trader-trading-timeframe-stats/div/div/div/div/div/div[contains(@title,'requerido para recibir todas las operaciones de cada')]"
+		},
+		"MaximumDrawdown":{
+			"XPATH":".//zl-trader-trading-timeframe-stats/div/div/div/div/div/div[contains(@title,'diferencia en pips entre el punto')]"
+		},
+		"TiempoPromTrading":{
+			"XPATH":".//zl-trader-trading-timeframe-stats/div/div/div/div/div/div[contains(@title,'Tiempo promedio de cada')]"
+		}
+	}
+}
