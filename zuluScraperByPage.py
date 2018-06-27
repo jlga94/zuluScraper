@@ -48,13 +48,18 @@ def getDataPerTrader(driver,ubications):
 		if ubications[ubication]["Boolean"]:
 			data[ubication] = len(driver.find_elements_by_xpath(ubications[ubication]["XPATH"])) > 0
 		else:
-			element = driver.find_element_by_xpath(ubications[ubication]["XPATH"])
-			if "Attribute" in ubications[ubication].keys():
-				data[ubication] = element.get_attribute(ubications[ubication]["Attribute"])
+			elementsFound = driver.find_elements_by_xpath(ubications[ubication]["XPATH"])
+			if len(elementsFound) > 0:
+				element = elementsFound[0]
+				if "Attribute" in ubications[ubication].keys():
+					data[ubication] = element.get_attribute(ubications[ubication]["Attribute"])
+				else:
+					if ubications[ubication]["Previous"]:
+						element = element.find_element_by_xpath('..')
+						element = element.find_element_by_xpath('..')
+					data[ubication] = element.text.split('\n')[-1].strip()
 			else:
-				element = element.find_element_by_xpath('..')
-				element = element.find_element_by_xpath('..')
-				data[ubication] = element.text.split('\n')[-1].strip()
+				data[ubication] = 'Not Found'
 	print(data)
 	return data
 
@@ -108,6 +113,11 @@ def main(user,password):
 	profile.set_preference("browser.tabs.remote.autostart.2", False)
 	profile.set_preference("browser.tabs.remote.force-enable", False)
 
+	profile.set_preference("browser.cache.disk.enable", False)
+	profile.set_preference("browser.cache.memory.enable", False)
+	profile.set_preference("browser.cache.offline.enable", False)
+	profile.set_preference("network.http.use-cache", False)
+
 	profile.set_preference('browser.download.folderList', 2) # custom location
 	profile.set_preference('browser.download.manager.showWhenStarting', False)
 	profile.set_preference('browser.download.dir', os.getcwd()+ '\\' + today)
@@ -157,10 +167,38 @@ def main(user,password):
 		driver.quit()
 		raise Exception()
 
+	#Filter By ZuluRank
+	filterElement = driver.find_element_by_xpath("//zl-performance-forex-view/button")
+	filterElement.click()
+
+	termElement = driver.find_element_by_xpath("//zl-performance-forex//zl-timeframes/ngl-picklist/div/button")
+	termElement.click()
+	termOptionsElements = driver.find_elements_by_xpath("//zl-performance-forex//zl-timeframes/ngl-picklist/div/div/ul/li")
+	termOptionsElements[-1].click()
+
+	orderByElement = driver.find_element_by_xpath("//zl-performance-forex-sort-by/ngl-picklist/div/button")
+	orderByElement.click()
+	orderByOptionsElements = driver.find_elements_by_xpath("//zl-performance-forex-sort-by/ngl-picklist/div/div/ul/li")
+	orderByOptionsElements[-1].click()
+
+	orderByAscDescElement = driver.find_element_by_xpath("//zl-performance-forex-search/ngl-modal//select/option[@value='asc']")
+	orderByAscDescElement.click()
+
+	searchElement = driver.find_element_by_xpath("//zl-performance-forex-search//div/button[contains(text(),'Buscar')]")
+	searchElement.click()
+
+	try:
+		element = WebDriverWait(driver, delay).until(EC.presence_of_element_located((By.XPATH,'//zl-load-more/button')))
+	except TimeoutException:
+		print("Se excedió el tiempo de espera")
+		driver.quit()
+		raise Exception()
+
 	moreDetailElement = driver.find_elements_by_xpath("//zl-performance/div/div/div/div/button")
 	print(len(moreDetailElement))
 
 	moreDetailElement[0].click()
+
 
 	rowsElements = driver.find_elements_by_xpath("//zl-performance-forex-list/div/table/tbody")
 	
@@ -185,6 +223,8 @@ def main(user,password):
 				driver.quit()
 				raise Exception()
 
+			sleep(2.5)
+
 			rowData = getDataPerTrader(driver,columnsJson["UbicationsGeneral"])
 			rowData["Url"] = urlTrader + "?t=" + str(timePeriod)
 
@@ -206,6 +246,7 @@ def main(user,password):
 
 					excelFilename = getLastFilename(os.getcwd() + '\\' + today)
 
+			rowData["Time"] = timePeriodsNames[timePeriod]
 			rowData["Excel"] = excelFilename
 
 			print(rowData)

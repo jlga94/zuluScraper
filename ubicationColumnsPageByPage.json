@@ -2,7 +2,6 @@
 	"Columns":[
 		"TraderName",
 		"Order",
-		"Pips",
 		"CantidadSeguida",
 		"BeneficioTotal",
 		"PosicAbiertas",
@@ -50,55 +49,68 @@
 		},
 		"Order":{
 			"XPATH":"//zl-trader-rank/div/span/strong",
-			"Boolean":0
+			"Boolean":0,
+			"Previous":0
 		},
 		"CantidadSeguida":{
 			"XPATH":".//zl-trader-overall-stats/div/div/div/div[contains(text(),'CANTIDAD SEGUIDA')]",
-			"Boolean":0
+			"Boolean":0,
+			"Previous":1
 		},
 		"BeneficioTotal":{
 			"XPATH":".//zl-trader-overall-stats/div/div/div/div[contains(text(),'BENEFICIO TOTAL')]",
-			"Boolean":0
+			"Boolean":0,
+			"Previous":1
 		},
 		"PosicAbiertas":{
 			"XPATH":".//zl-trader-overall-stats/div/div/div/div[contains(text(),'POSIC. ABIERTAS')]",
-			"Boolean":0
+			"Boolean":0,
+			"Previous":1
 		},
 		"Semanas":{
 			"XPATH":".//zl-trader-overall-stats/div/div/div/div[contains(text(),'SEMANAS')]",
-			"Boolean":0
+			"Boolean":0,
+			"Previous":1
 		},
 		"RoiAnualizado":{
 			"XPATH":".//zl-trader-overall-stats/div/div/div/div[contains(text(),'ROI')]",
-			"Boolean":0
+			"Boolean":0,
+			"Previous":1
 		},
 		"MaximumDrawdownGeneral":{
 			"XPATH":".//zl-trader-overall-stats/div/div/div/div[contains(text(),'MAXIMUM DRAWDOWN')]",
-			"Boolean":0
+			"Boolean":0,
+			"Previous":1
 		},
 		"MejorOperacion":{
 			"XPATH":".//zl-trader-overall-stats/div/div/div/div[contains(text(),'OPERACION MEJOR')]",
-			"Boolean":0
+			"Boolean":0,
+			"Previous":1
 		},
 		"PeorOperacion":{
 			"XPATH":".//zl-trader-overall-stats/div/div/div/div[contains(text(),'PEOR OPERACION')]",
-			"Boolean":0
+			"Boolean":0,
+			"Previous":1
 		},
 		"Usuarios":{
 			"XPATH":".//zl-trader-overall-stats/div/div/div/div[contains(text(),'USUARIOS')]",
-			"Boolean":0
+			"Boolean":0,
+			"Previous":1
 		},
 		"TieneUsuariosCuentaReal":{
 			"XPATH":".//zl-trader-overall-stats/div/div/div/div[contains(text(),'TIENE USUARIOS DE CUENTA REAL')]",
-			"Boolean":0
+			"Boolean":0,
+			"Previous":1
 		},
 		"Vistos":{
 			"XPATH":".//zl-trader-overall-stats/div/div/div/div[contains(text(),'VISTOS')]",
-			"Boolean":0
+			"Boolean":0,
+			"Previous":1
 		},
 		"UltimaActualizacion":{
 			"XPATH":".//zl-trader-overall-stats/div/div/div/div[contains(text(),'ULTIMA ACTUALIZACION')]",
-			"Boolean":0
+			"Boolean":0,
+			"Previous":1
 		},
 		"ActividadRiesgosa":{
 			"XPATH":"//zl-trader-warning/div[contains(@title,'Este Trader ha demostrado que el comportamiento de riesgo')]",
