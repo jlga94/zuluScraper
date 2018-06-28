@@ -132,8 +132,8 @@ def main(user,password):
 
 	binary = FirefoxBinary(firefoxDirectory)
 
-	#driver = webdriver.Firefox(firefox_options=options,firefox_profile = profile,firefox_binary=binary)
-	driver = webdriver.Firefox(firefox_profile = profile,firefox_binary=binary)
+	driver = webdriver.Firefox(firefox_options=options,firefox_profile = profile,firefox_binary=binary)
+	#driver = webdriver.Firefox(firefox_profile = profile,firefox_binary=binary)
 	#driver = webdriver.Firefox(firefox_profile = profile)
 	driver.set_page_load_timeout(500)
 
@@ -144,7 +144,6 @@ def main(user,password):
 
 	userElement.send_keys(user)
 	passwordElement.send_keys(password)
-
 
 	driver.find_element_by_id("main_btnLogin").click()
 
