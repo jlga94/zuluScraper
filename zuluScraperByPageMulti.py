@@ -101,185 +101,196 @@ def downloadTraders(timePeriod,arguments):
 	timePeriodsFilenames = arguments["timePeriodsFilenames"]
 	columnsJson = arguments["columnsJson"]
 
+	actualTrader = 0
+	maxTraders = 3000
+	urlTrader = None
 
-	options = Options()
-	options.add_argument("--headless")
-
-	profile = webdriver.FirefoxProfile()
-	profile.set_preference("dom.disable_beforeunload", True)
-
-	profile.set_preference("browser.tabs.remote.autostart", False)
-	profile.set_preference("browser.tabs.remote.autostart.1", False)
-	profile.set_preference("browser.tabs.remote.autostart.2", False)
-	profile.set_preference("browser.tabs.remote.force-enable", False)
-
-	profile.set_preference("browser.cache.disk.enable", False)
-	profile.set_preference("browser.cache.memory.enable", False)
-	profile.set_preference("browser.cache.offline.enable", False)
-	profile.set_preference("network.http.use-cache", False)
-
-	profile.set_preference('browser.download.folderList', 2) # custom location
-	profile.set_preference('browser.download.manager.showWhenStarting', False)
-	profile.set_preference('browser.download.dir', os.getcwd()+ '\\' + today)
-	profile.set_preference('browser.helperApps.neverAsk.saveToDisk', "application/xml,text/xml,application/csv,application/excel,application/vnd.msexcel,application/vnd.ms-excel,text/anytext,text/comma-separated-values,text/csv,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/octet-stream")
-	profile.set_preference("browser.helperApps.neverAsk.openFile","application/xml,text/xml,application/csv,application/excel,application/vnd.msexcel,application/vnd.ms-excel,text/anytext,text/comma-separated-values,text/csv,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/octet-stream")
-	profile.set_preference("browser.helperApps.alwaysAsk.force", False)
-	profile.set_preference("browser.download.manager.useWindow", False)
-	profile.set_preference("browser.download.manager.focusWhenStarting", False)
-	profile.set_preference("browser.download.manager.alertOnEXEOpen", False)
-	profile.set_preference("browser.download.manager.showAlertOnComplete", False)
-	profile.set_preference("browser.download.manager.closeWhenDone", True)
-
-	binary = FirefoxBinary(firefoxDirectory)
-
-	driver = webdriver.Firefox(firefox_options=options,firefox_profile = profile,firefox_binary=binary)
-	#driver = webdriver.Firefox(firefox_profile = profile,firefox_binary=binary)
-	#driver = webdriver.Firefox(firefox_profile = profile)
-	driver.set_page_load_timeout(500)
-
-	driver.get(urlLogin)
-
-	userElement = driver.find_element_by_id("main_tbUsername")
-	passwordElement = driver.find_element_by_id("main_tbPassword")
-
-	userElement.send_keys(user)
-	passwordElement.send_keys(password)
-
-	driver.find_element_by_id("main_btnLogin").click()
-
-	delayLogin = 30 #seconds
-	delay = 180 #seconds
-
-	try:
-		element = WebDriverWait(driver, delayLogin).until(EC.presence_of_element_located((By.ID,'user-top-container')))
-	except TimeoutException:
-		print("Se excedió el tiempo de espera")
-		driver.quit()
-		raise LoginException()
-
-	driver.get(urlToScrap)
-	
-	try:
-		element = WebDriverWait(driver, delay).until(EC.presence_of_element_located((By.XPATH,'//zl-load-more/button')))
-	except TimeoutException:
-		print("Se excedió el tiempo de espera")
-		driver.quit()
-		raise Exception()
-
-	#Filter By ZuluRank
-	filterElement = driver.find_element_by_xpath("//zl-performance-forex-view/button")
-	filterElement.click()
-
-	termElement = driver.find_element_by_xpath("//zl-performance-forex//zl-timeframes/ngl-picklist/div/button")
-	termElement.click()
-	termOptionsElements = driver.find_elements_by_xpath("//zl-performance-forex//zl-timeframes/ngl-picklist/div/div/ul/li")
-	termOptionsElements[-1].click()
-
-	orderByElement = driver.find_element_by_xpath("//zl-performance-forex-sort-by/ngl-picklist/div/button")
-	orderByElement.click()
-	orderByOptionsElements = driver.find_elements_by_xpath("//zl-performance-forex-sort-by/ngl-picklist/div/div/ul/li")
-	orderByOptionsElements[-1].click()
-
-	orderByAscDescElement = driver.find_element_by_xpath("//zl-performance-forex-search/ngl-modal//select/option[@value='asc']")
-	orderByAscDescElement.click()
-
-	searchElement = driver.find_element_by_xpath("//zl-performance-forex-search//div/button[contains(text(),'Buscar')]")
-	searchElement.click()
-
-	try:
-		element = WebDriverWait(driver, delay).until(EC.presence_of_element_located((By.XPATH,'//zl-load-more/button')))
-	except TimeoutException:
-		print("Se excedió el tiempo de espera")
-		driver.quit()
-		raise Exception()
-
-	moreDetailElement = driver.find_elements_by_xpath("//zl-performance/div/div/div/div/button")
-	print(len(moreDetailElement))
-
-	moreDetailElement[0].click()
-
-
-	rowsElements = driver.find_elements_by_xpath("//zl-performance-forex-list/div/table/tbody")
-	
-	firstRowElement = rowsElements[0].find_element_by_xpath(".//zl-username/a")
-	urlTrader = firstRowElement.get_attribute("href")
-	urlTrader = urlTrader.split("?")[0]
-	
-	maxTraders = 100
-
-	for iTrader in range(maxTraders):
-		print(iTrader)
-
-		print("TimePeriod: " + str(timePeriod))
-		driver.get(urlTrader + "?t=" + str(timePeriod))
-
+	driver = None
+	while (actualTrader < maxTraders):
+		driver = None
 		try:
-			element = WebDriverWait(driver, delay).until(EC.presence_of_element_located((By.XPATH,'//zl-timeframes/ngl-picklist/div/button')))
-		except TimeoutException:
-			print("Se excedió el tiempo de espera")
-			driver.quit()
-			raise Exception()
+			options = Options()
+			options.add_argument("--headless")
 
-		sleep(2.5)
+			profile = webdriver.FirefoxProfile()
+			profile.set_preference("dom.disable_beforeunload", True)
 
-		rowData = getDataPerTrader(driver,columnsJson["UbicationsGeneral"])
-		rowData["Url"] = urlTrader + "?t=" + str(timePeriod)
+			profile.set_preference("browser.tabs.remote.autostart", False)
+			profile.set_preference("browser.tabs.remote.autostart.1", False)
+			profile.set_preference("browser.tabs.remote.autostart.2", False)
+			profile.set_preference("browser.tabs.remote.force-enable", False)
 
-		badgesElementsHTML = driver.find_element_by_xpath("//zl-trader-badge").get_attribute('innerHTML')
-		for badge,item in columnsJson["UbicationsBadges"].items():
-			rowData[badge] = item["ICON"] in badgesElementsHTML
+			profile.set_preference("browser.cache.disk.enable", False)
+			profile.set_preference("browser.cache.memory.enable", False)
+			profile.set_preference("browser.cache.offline.enable", False)
+			profile.set_preference("network.http.use-cache", False)
 
-		rowData = getDataPerTraderPerTime(rowData,driver,columnsJson["UbicationsPerTime"])
+			profile.set_preference('browser.download.folderList', 2) # custom location
+			profile.set_preference('browser.download.manager.showWhenStarting', False)
+			profile.set_preference('browser.download.dir', os.getcwd()+ '\\' + today)
+			profile.set_preference('browser.helperApps.neverAsk.saveToDisk', "application/xml,text/xml,application/csv,application/excel,application/vnd.msexcel,application/vnd.ms-excel,text/anytext,text/comma-separated-values,text/csv,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/octet-stream")
+			profile.set_preference("browser.helperApps.neverAsk.openFile","application/xml,text/xml,application/csv,application/excel,application/vnd.msexcel,application/vnd.ms-excel,text/anytext,text/comma-separated-values,text/csv,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/octet-stream")
+			profile.set_preference("browser.helperApps.alwaysAsk.force", False)
+			profile.set_preference("browser.download.manager.useWindow", False)
+			profile.set_preference("browser.download.manager.focusWhenStarting", False)
+			profile.set_preference("browser.download.manager.alertOnEXEOpen", False)
+			profile.set_preference("browser.download.manager.showAlertOnComplete", False)
+			profile.set_preference("browser.download.manager.closeWhenDone", True)
 
-		if timePeriodsNames[timePeriod] == "Total":
-			excelFilename = "No hay archivo Excel disponible"
+			binary = FirefoxBinary(firefoxDirectory)
 
-			if len(driver.find_elements_by_xpath("//zl-trading-history-excel-export/span/button")) > 0:
-				exportExcelElement = driver.find_element_by_xpath("//zl-trading-history-excel-export/span/button")
-				exportExcelElement.click()
+			driver = webdriver.Firefox(firefox_options=options,firefox_profile = profile,firefox_binary=binary)
+			#driver = webdriver.Firefox(firefox_profile = profile,firefox_binary=binary)
+			#driver = webdriver.Firefox(firefox_profile = profile)
+			driver.set_page_load_timeout(100000)
 
-				exportExcel2007Elements = driver.find_elements_by_xpath("//zl-trading-history-excel-export/span/div/ul/li")
-				exportExcel2007Elements[0].click()
+			driver.get(urlLogin)
 
-				sleep(3)
+			userElement = driver.find_element_by_id("main_tbUsername")
+			passwordElement = driver.find_element_by_id("main_tbPassword")
 
-				excelFilename = getLastFilename(os.getcwd() + '\\' + today)
-		else:
-			excelFilename = "Detalle en Archivo con periodo Total"
+			userElement.send_keys(user)
+			passwordElement.send_keys(password)
 
-		rowData["Time"] = timePeriodsNames[timePeriod]
-		rowData["Excel"] = excelFilename
+			driver.find_element_by_id("main_btnLogin").click()
 
-		print(rowData)
+			delayLogin = 30 #seconds
+			delay = 180 #seconds
 
-		dfTraders = pd.DataFrame(rowData,columns=columnsJson["Columns"], index=[0])
-		with open(timePeriodsFilenames[timePeriod], "a") as f:
-			dfTraders.to_csv(f, header=None, index=False,encoding='ISO-8859-1', sep='|')
+			try:
+				element = WebDriverWait(driver, delayLogin).until(EC.presence_of_element_located((By.ID,'user-top-container')))
+			except TimeoutException:
+				print("Se excedió el tiempo de espera")
+				raise LoginException()
+
+			if urlTrader == None:
+				try:
+					driver.get(urlToScrap)
+					element = WebDriverWait(driver, delay).until(EC.presence_of_element_located((By.XPATH,'//zl-load-more/button')))
+				except TimeoutException:
+					print("Se excedió el tiempo de espera")
+					raise Exception()
+
+				#Filter By ZuluRank
+				filterElement = driver.find_element_by_xpath("//zl-performance-forex-view/button")
+				filterElement.click()
+
+				termElement = driver.find_element_by_xpath("//zl-performance-forex//zl-timeframes/ngl-picklist/div/button")
+				termElement.click()
+				termOptionsElements = driver.find_elements_by_xpath("//zl-performance-forex//zl-timeframes/ngl-picklist/div/div/ul/li")
+				termOptionsElements[-1].click()
+
+				orderByElement = driver.find_element_by_xpath("//zl-performance-forex-sort-by/ngl-picklist/div/button")
+				orderByElement.click()
+				orderByOptionsElements = driver.find_elements_by_xpath("//zl-performance-forex-sort-by/ngl-picklist/div/div/ul/li")
+				orderByOptionsElements[-1].click()
+
+				orderByAscDescElement = driver.find_element_by_xpath("//zl-performance-forex-search/ngl-modal//select/option[@value='asc']")
+				orderByAscDescElement.click()
+
+				searchElement = driver.find_element_by_xpath("//zl-performance-forex-search//div/button[contains(text(),'Buscar')]")
+				searchElement.click()
+
+				try:
+					element = WebDriverWait(driver, delay).until(EC.presence_of_element_located((By.XPATH,'//zl-load-more/button')))
+				except TimeoutException:
+					print("Se excedió el tiempo de espera")
+					raise Exception()
+
+				moreDetailElement = driver.find_elements_by_xpath("//zl-performance/div/div/div/div/button")
+				print(len(moreDetailElement))
+
+				moreDetailElement[0].click()
 
 
-		#Get next link
-		nextElement = driver.find_elements_by_xpath("//zl-trader-rank/div/a[contains(@title,'al siguiente trader')]")
-		if len(nextElement)> 0:
-			urlTrader = nextElement[0].get_attribute("href")
-			urlTrader = urlTrader.split("?")[0]
-		else:
-			print("No hay Next Trader")
-			break
+				rowsElements = driver.find_elements_by_xpath("//zl-performance-forex-list/div/table/tbody")
+				
+				firstRowElement = rowsElements[0].find_element_by_xpath(".//zl-username/a")
+				urlTrader = firstRowElement.get_attribute("href")
+				urlTrader = urlTrader.split("?")[0]
 
-	driver.quit()
+			for iTrader in range(actualTrader,maxTraders):
+				print(iTrader)
+
+				print("TimePeriod: " + str(timePeriod))
+
+				try:
+					driver.get(urlTrader + "?t=" + str(timePeriod))
+					element = WebDriverWait(driver, delay).until(EC.presence_of_element_located((By.XPATH,'//zl-timeframes/ngl-picklist/div/button')))
+				except TimeoutException:
+					print("Se excedió el tiempo de espera")
+					actualTrader = iTrader
+					raise Exception()
+
+				sleep(2.5)
+
+				rowData = getDataPerTrader(driver,columnsJson["UbicationsGeneral"])
+				rowData["Url"] = urlTrader + "?t=" + str(timePeriod)
+
+				badgesElementsHTML = driver.find_element_by_xpath("//zl-trader-badge").get_attribute('innerHTML')
+				for badge,item in columnsJson["UbicationsBadges"].items():
+					rowData[badge] = item["ICON"] in badgesElementsHTML
+
+				rowData = getDataPerTraderPerTime(rowData,driver,columnsJson["UbicationsPerTime"])
+
+				if timePeriodsNames[timePeriod] == "Total":
+					excelFilename = "No hay archivo Excel disponible"
+
+					if len(driver.find_elements_by_xpath("//zl-trading-history-excel-export/span/button")) > 0:
+						exportExcelElement = driver.find_element_by_xpath("//zl-trading-history-excel-export/span/button")
+						exportExcelElement.click()
+
+						exportExcel2007Elements = driver.find_elements_by_xpath("//zl-trading-history-excel-export/span/div/ul/li")
+						exportExcel2007Elements[0].click()
+
+						sleep(3)
+
+						excelFilename = getLastFilename(os.getcwd() + '\\' + today)
+				else:
+					excelFilename = "Detalle en Archivo con periodo Total"
+
+				rowData["Time"] = timePeriodsNames[timePeriod]
+				rowData["Excel"] = excelFilename
+
+				print(rowData)
+
+				dfTraders = pd.DataFrame(rowData,columns=columnsJson["Columns"], index=[0])
+				with open(timePeriodsFilenames[timePeriod], "a") as f:
+					dfTraders.to_csv(f, header=None, index=False,encoding='ISO-8859-1', sep='|')
+
+
+				#Get next link
+				nextElement = driver.find_elements_by_xpath("//zl-trader-rank/div/a[contains(@title,'al siguiente trader')]")
+				if len(nextElement)> 0:
+					urlTrader = nextElement[0].get_attribute("href")
+					urlTrader = urlTrader.split("?")[0]
+				else:
+					print("No hay Next Trader")
+					break
+				actualTrader = iTrader
+			actualTrader +=1
+
+		except:
+			if driver:
+				driver.quit()
+			print("Unexpected error:", sys.exc_info())
+
+	if driver:
+		driver.quit()
+	return None
 
 def main(user,password):
 
 	today = datetime.datetime.strftime(datetime.datetime.now(), '%Y_%m_%d')
 	createTodayDirectory(today)
 
+	#timePeriods = [10000]
 	timePeriods = [10000,30,90,180,365]
 	timePeriodsNames = {30:"Month",90:"Trimester",180:"Semester",365:"Year",10000:"Total"}
 	timePeriodsFilenames = {}
 
 	columnsFile = "ubicationColumnsPageByPage.json"
 	columnsJson = getColumns(columnsFile)
-
 
 	for timePeriod in timePeriods:
 		outputFile = "zulutrade_" + timePeriodsNames[timePeriod] + "_" + today + ".csv"
@@ -294,9 +305,8 @@ def main(user,password):
 	arguments["timePeriodsFilenames"] = timePeriodsFilenames
 	arguments["columnsJson"] = columnsJson
 
-
 	tradersArgs=partial(downloadTraders, arguments=arguments)
-	with multiprocessing.Pool(8) as p:
+	with multiprocessing.Pool(4) as p:
 		p.map(tradersArgs,timePeriods)
 
 
