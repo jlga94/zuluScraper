@@ -50,31 +50,39 @@ def getLastFilename(path):
 
 def getDataPerTrader(driver,ubications):
 	data = {}
-	for ubication in ubications.keys():
-		if ubications[ubication]["Boolean"]:
-			data[ubication] = len(driver.find_elements_by_xpath(ubications[ubication]["XPATH"])) > 0
-		else:
-			elementsFound = driver.find_elements_by_xpath(ubications[ubication]["XPATH"])
-			if len(elementsFound) > 0:
-				element = elementsFound[0]
-				if "Attribute" in ubications[ubication].keys():
-					data[ubication] = element.get_attribute(ubications[ubication]["Attribute"])
-				else:
-					if ubications[ubication]["Previous"]:
-						element = element.find_element_by_xpath('..')
-						element = element.find_element_by_xpath('..')
-					data[ubication] = element.text.split('\n')[-1].strip()
+	try:
+		for ubication in ubications.keys():
+			if ubications[ubication]["Boolean"]:
+				data[ubication] = len(driver.find_elements_by_xpath(ubications[ubication]["XPATH"])) > 0
 			else:
-				data[ubication] = 'Not Found'
+				elementsFound = driver.find_elements_by_xpath(ubications[ubication]["XPATH"])
+				if len(elementsFound) > 0:
+					element = elementsFound[0]
+					if "Attribute" in ubications[ubication].keys():
+						data[ubication] = element.get_attribute(ubications[ubication]["Attribute"])
+					else:
+						if ubications[ubication]["Previous"]:
+							element = element.find_element_by_xpath('..')
+							element = element.find_element_by_xpath('..')
+						data[ubication] = element.text.split('\n')[-1].strip()
+				else:
+					data[ubication] = 'Not Found'
+	except:
+		print("Unexpected error:", sys.exc_info())
+		raise Exception()
 	print(data)
 	return data
 
 
 def getDataPerTraderPerTime(data,driver,ubications):
-	for ubication in ubications.keys():
-		element = driver.find_element_by_xpath(ubications[ubication]["XPATH"])
-		element = element.find_element_by_xpath('..')
-		data[ubication] = element.text.split('\n')[-1].strip()
+	try:
+		for ubication in ubications.keys():
+			element = driver.find_element_by_xpath(ubications[ubication]["XPATH"])
+			element = element.find_element_by_xpath('..')
+			data[ubication] = element.text.split('\n')[-1].strip()
+	except:
+		print("Unexpected error:", sys.exc_info())
+		raise Exception()
 	print(data)
 	return data
 
@@ -284,8 +292,8 @@ def main(user,password):
 	today = datetime.datetime.strftime(datetime.datetime.now(), '%Y_%m_%d')
 	createTodayDirectory(today)
 
-	#timePeriods = [10000]
-	timePeriods = [10000,30,90,180,365]
+	timePeriods = [10000]
+	#timePeriods = [10000,30,90,180,365]
 	timePeriodsNames = {30:"Month",90:"Trimester",180:"Semester",365:"Year",10000:"Total"}
 	timePeriodsFilenames = {}
 
