@@ -110,7 +110,7 @@ def downloadTraders(timePeriod,arguments):
 	columnsJson = arguments["columnsJson"]
 
 	actualTrader = 0
-	maxTraders = 3000
+	maxTraders = 2000
 	urlTrader = None
 
 	driver = None
@@ -175,7 +175,7 @@ def downloadTraders(timePeriod,arguments):
 				try:
 					driver.get(urlToScrap)
 					element = WebDriverWait(driver, delay).until(EC.presence_of_element_located((By.XPATH,'//zl-load-more/button')))
-				except TimeoutException:
+				except:
 					print("Se excedió el tiempo de espera")
 					raise Exception()
 
@@ -201,7 +201,7 @@ def downloadTraders(timePeriod,arguments):
 
 				try:
 					element = WebDriverWait(driver, delay).until(EC.presence_of_element_located((By.XPATH,'//zl-load-more/button')))
-				except TimeoutException:
+				except:
 					print("Se excedió el tiempo de espera")
 					raise Exception()
 
@@ -225,7 +225,7 @@ def downloadTraders(timePeriod,arguments):
 				try:
 					driver.get(urlTrader + "?t=" + str(timePeriod))
 					element = WebDriverWait(driver, delay).until(EC.presence_of_element_located((By.XPATH,'//zl-timeframes/ngl-picklist/div/button')))
-				except TimeoutException:
+				except:
 					print("Se excedió el tiempo de espera")
 					actualTrader = iTrader
 					raise Exception()
@@ -292,8 +292,8 @@ def main(user,password):
 	today = datetime.datetime.strftime(datetime.datetime.now(), '%Y_%m_%d')
 	createTodayDirectory(today)
 
-	timePeriods = [10000]
-	#timePeriods = [10000,30,90,180,365]
+	#timePeriods = [10000]
+	timePeriods = [10000,30,90,180,365]
 	timePeriodsNames = {30:"Month",90:"Trimester",180:"Semester",365:"Year",10000:"Total"}
 	timePeriodsFilenames = {}
 
@@ -314,7 +314,7 @@ def main(user,password):
 	arguments["columnsJson"] = columnsJson
 
 	tradersArgs=partial(downloadTraders, arguments=arguments)
-	with multiprocessing.Pool(4) as p:
+	with multiprocessing.Pool(6) as p:
 		p.map(tradersArgs,timePeriods)
 
 
