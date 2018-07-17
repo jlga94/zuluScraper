@@ -110,8 +110,11 @@ def downloadTraders(timePeriod,arguments):
 	columnsJson = arguments["columnsJson"]
 
 	actualTrader = 0
-	maxTraders = 2000
+	maxTraders = 100
 	urlTrader = None
+
+	iCutNumberTrader = 0
+	cutNumberTrader = 25
 
 	driver = None
 	while (actualTrader < maxTraders):
@@ -219,8 +222,13 @@ def downloadTraders(timePeriod,arguments):
 
 			for iTrader in range(actualTrader,maxTraders):
 				print(iTrader)
-
 				print("TimePeriod: " + str(timePeriod))
+
+				iCutNumberTrader += 1
+				if iCutNumberTrader% cutNumberTrader == 0:
+					print("Se realizara corte por ser divisor de 25")
+					actualTrader = iTrader
+					raise Exception()
 
 				try:
 					driver.get(urlTrader + "?t=" + str(timePeriod))
