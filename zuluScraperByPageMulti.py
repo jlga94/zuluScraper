@@ -110,7 +110,7 @@ def downloadTraders(timePeriod,arguments):
 	columnsJson = arguments["columnsJson"]
 
 	actualTrader = 0
-	maxTraders = 100
+	maxTraders = 3000
 	urlTrader = None
 
 	iCutNumberTrader = 0
