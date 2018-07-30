@@ -37,9 +37,16 @@ def getColumns(columnsFile):
 
 
 def createTodayDirectory(todayDirectory):
-	if os.path.exists(todayDirectory):
-		shutil.rmtree(todayDirectory)
-	os.makedirs(todayDirectory)
+	if not(os.path.exists(todayDirectory)):
+		#shutil.rmtree(todayDirectory)
+		os.makedirs(todayDirectory)
+		return todayDirectory
+
+	for i in range(2,1000):
+		if not(os.path.exists(todayDirectory+"_"+str(i))):
+			#shutil.rmtree(todayDirectory)
+			os.makedirs(todayDirectory+"_"+str(i))
+			return todayDirectory+"_"+str(i)
 
 
 def getLastFilename(path):
@@ -111,10 +118,11 @@ def downloadTraders(timePeriod,arguments):
 
 	actualTrader = 0
 	maxTraders = 3000
-	urlTrader = None
+	#urlTrader = None
+	urlTrader = 'https://es.zulutrade.com/trader/303394'
 
 	iCutNumberTrader = 0
-	cutNumberTrader = 25
+	cutNumberTrader = 20
 
 	driver = None
 	while (actualTrader < maxTraders):
@@ -298,7 +306,7 @@ def downloadTraders(timePeriod,arguments):
 def main(user,password):
 
 	today = datetime.datetime.strftime(datetime.datetime.now(), '%Y_%m_%d')
-	createTodayDirectory(today)
+	today = createTodayDirectory(today)
 
 	#timePeriods = [10000]
 	timePeriods = [10000,30,90,180,365]
