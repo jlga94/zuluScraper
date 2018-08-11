@@ -74,6 +74,8 @@ def getDataPerTrader(driver,ubications):
 						data[ubication] = element.text.split('\n')[-1].strip()
 				else:
 					data[ubication] = 'Not Found'
+				#In case of infinite symbol to avoid problems with unicode
+				data[ubication] = data[ubication].replace('∞','INFINITE')
 	except:
 		print("Unexpected error:", sys.exc_info())
 		raise Exception()
@@ -117,9 +119,12 @@ def downloadTraders(timePeriod,arguments):
 	columnsJson = arguments["columnsJson"]
 
 	actualTrader = 0
-	maxTraders = 3000
-	#urlTrader = None
-	urlTrader = 'https://es.zulutrade.com/trader/303394'
+	maxTraders = 20
+	urlTrader = None
+	#En caso de querer iniciar desde un Trader en particular, poner el link correspondiente@
+
+	#urlTrader = 'https://es.zulutrade.com/trader/360492'
+
 
 	iCutNumberTrader = 0
 	cutNumberTrader = 20
@@ -280,7 +285,7 @@ def downloadTraders(timePeriod,arguments):
 
 				dfTraders = pd.DataFrame(rowData,columns=columnsJson["Columns"], index=[0])
 				with open(timePeriodsFilenames[timePeriod], "a") as f:
-					dfTraders.to_csv(f, header=None, index=False,encoding='ISO-8859-1', sep='|')
+					dfTraders.to_csv(f, header=None, index=False,encoding='utf-8', sep='|')
 
 
 				#Get next link
