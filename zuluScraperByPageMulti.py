@@ -108,8 +108,8 @@ def downloadTraders(timePeriod,arguments):
 	urlLogin = "https://es.zulutrade.com/login"
 	urlToScrap = "https://es.zulutrade.com/traders"
 
-	
-	firefoxDirectory = r'D:\Navegadores\Mozilla Firefox\firefox.exe'
+	firefoxDirectory = r'C:\firefox56\firefox.exe'
+	#firefoxDirectory = r'D:\Navegadores\Mozilla Firefox\firefox.exe'
 
 	user = arguments["user"]
 	password = arguments["password"]
