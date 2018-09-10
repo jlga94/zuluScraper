@@ -163,7 +163,8 @@ def downloadTraders(timePeriod,arguments):
 
 			binary = FirefoxBinary(firefoxDirectory)
 
-			driver = webdriver.Firefox(firefox_options=options,firefox_profile = profile,firefox_binary=binary)
+			driver = webdriver.Firefox(firefox_options=options,firefox_profile = profile,firefox_binary=binary, executable_path = os.getcwd() + '/geckodriver.exe')
+			#driver = webdriver.Firefox(firefox_options=options,firefox_profile = profile,firefox_binary=binary)
 			#driver = webdriver.Firefox(firefox_profile = profile,firefox_binary=binary)
 			#driver = webdriver.Firefox(firefox_profile = profile)
 			driver.set_page_load_timeout(100000)
